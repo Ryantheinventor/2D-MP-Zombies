@@ -72,7 +72,6 @@ public class PathFinder
             path.Insert(0, curNode.parentNode.node.gameObject);
             curNode = curNode.parentNode;
         }
-        Debug.Log("Path size:" + path.Count);
         return path;
     }
 

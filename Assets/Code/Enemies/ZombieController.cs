@@ -68,8 +68,8 @@ public class ZombieController : MonoBehaviour
         int layerMask = 1 << 7;
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = myTarget.transform.position - transform.position;
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 1, direction, direction.magnitude, ~layerMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
+        //RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, direction, direction.magnitude, ~layerMask);
         TargetIsVisible = hit.transform.tag == "Player";
 
         return TargetIsVisible;
@@ -94,7 +94,7 @@ public class ZombieController : MonoBehaviour
         {
             path = PathFinder.FindPath(gameObject, myTarget, GameObject.Find("AINodes"));
         }
-        else if(!path[path.Count - 1].AddComponent<Node>().TargetIsVisible(myTarget)) 
+        else if(!path[path.Count - 1].GetComponent<Node>().TargetIsVisible(myTarget)) 
         {
             path = PathFinder.FindPath(gameObject, myTarget, GameObject.Find("AINodes"));
         }
@@ -107,7 +107,7 @@ public class ZombieController : MonoBehaviour
                 path.RemoveAt(0);
             }
         }
-
+        
     }
 
     public GameObject findNearestNode() 
@@ -129,19 +129,58 @@ public class ZombieController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Vector3 curStart = transform.position;
-        for (int i = 0; i < path.Count; i++) 
+        if (myState != State.Waiting)
         {
-            Vector3 curEnd = path[i].transform.position;
-            Gizmos.DrawLine(curStart, curEnd);
-            curStart = curEnd;
+            Gizmos.color = Color.blue;
+            Vector3 curStart = transform.position;
+            if (!TargetIsVisible)
+            {
+                for (int i = 0; i < path.Count; i++)
+                {
+                    Vector3 curEnd = path[i].transform.position;
+                    Gizmos.DrawLine(curStart, curEnd);
+                    curStart = curEnd;
+                }
+                Gizmos.DrawLine(curStart, myTarget.transform.position);
+            }
+            else 
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(curStart, myTarget.transform.position);
+            }
+            
         }
-        Gizmos.DrawLine(curStart, myTarget.transform.position);
     }
 
 
+    public void ChangeState(State newState) 
+    {
+        switch (myState) 
+        {
+            case State.Leading:
+                break;
+            case State.Waiting:
+                break;
+            case State.Tracking:
+                break;
+            case State.Following:
+                break;
+        }
+        myState = newState;
+        switch (myState)
+        {
+            case State.Leading:
+                path = new List<GameObject>();
+                break;
+            case State.Waiting:
+                break;
+            case State.Tracking:
+                break;
+            case State.Following:
+                break;
+        }
 
+    }
 
 
 

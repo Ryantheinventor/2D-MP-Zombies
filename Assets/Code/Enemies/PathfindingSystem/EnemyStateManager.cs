@@ -18,33 +18,33 @@ public class EnemyStateManager : MonoBehaviour
                 case ZombieController.State.Waiting:
                     if (z.TargetIsVisible)
                     {
-                        z.myState = ZombieController.State.Tracking;
+                        z.ChangeState(ZombieController.State.Tracking);
                     }
                     else 
                     {
-                        z.myState = ZombieController.State.Leading;
+                        z.ChangeState(ZombieController.State.Leading);
                     }
                     break;
                 case ZombieController.State.Following:
                     if (z.TargetIsVisible)
                     {
-                        z.myState = ZombieController.State.Tracking;
+                        z.ChangeState(ZombieController.State.Tracking);
                     }
                     break;
                 case ZombieController.State.Leading:
                     if (z.TargetIsVisible)
                     {
-                        z.myState = ZombieController.State.Tracking;
+                        z.ChangeState(ZombieController.State.Tracking);
                     }
                     break;
                 case ZombieController.State.Tracking:
                     if (!z.TargetIsVisible)
                     {
-                        z.myState = ZombieController.State.Waiting;
+                        z.ChangeState(ZombieController.State.Waiting);
                     }
                     break;
                 default:
-                    z.myState = ZombieController.State.Waiting;
+                    z.ChangeState(ZombieController.State.Waiting);
                     break;
 
             }
