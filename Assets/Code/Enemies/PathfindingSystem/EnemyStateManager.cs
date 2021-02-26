@@ -16,9 +16,13 @@ public class EnemyStateManager : MonoBehaviour
             switch (z.myState) 
             {
                 case ZombieController.State.Waiting:
-                    if (z.TargetIsVisible) 
+                    if (z.TargetIsVisible)
                     {
                         z.myState = ZombieController.State.Tracking;
+                    }
+                    else 
+                    {
+                        z.myState = ZombieController.State.Leading;
                     }
                     break;
                 case ZombieController.State.Following:

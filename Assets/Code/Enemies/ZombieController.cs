@@ -10,8 +10,16 @@ public class ZombieController : MonoBehaviour
     public bool TargetIsVisible = false;
     public float TargetCheckTime = 2f;//seconds between target visibility checks
     private float curCheckTime = 0f;
+    private float curPathTime = 0f;
     public State myState = State.Waiting;
 
+    public float nodeOffsetDist = 1;
+    public List<GameObject> path = new List<GameObject>();
+    private GameObject nodeContainer;
+    //[HideInInspector]
+    public List<GameObject> nearNodes = new List<GameObject>();
+    
+    
     public enum State 
     {
         Waiting,//waiting for a task (either leader or follower)
@@ -23,6 +31,7 @@ public class ZombieController : MonoBehaviour
     private void Start()
     {
         GameObject.FindObjectOfType<EnemyStateManager>().NewZombie(gameObject);
+        nodeContainer = GameObject.Find("AINodes");
     }
 
 
@@ -41,15 +50,13 @@ public class ZombieController : MonoBehaviour
             case State.Following:
                 break;
             case State.Leading:
+                PathToTarget();
                 break;
             case State.Tracking:
                 MoveTo(myTarget.transform.position);
                 break;
-            defaultZ:
+            default:
                 break;
-
-
-
         }
 
 
@@ -61,19 +68,9 @@ public class ZombieController : MonoBehaviour
         int layerMask = 1 << 7;
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = myTarget.transform.position - transform.position;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
-        
-        Debug.Log(hit.transform.name);
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 1, direction, direction.magnitude, ~layerMask);
         TargetIsVisible = hit.transform.tag == "Player";
-
-        if (TargetIsVisible)
-        {
-            Debug.DrawRay(transform.position, direction, Color.green, TargetCheckTime);
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, direction, Color.red, TargetCheckTime);
-        }
 
         return TargetIsVisible;
     }
@@ -90,6 +87,60 @@ public class ZombieController : MonoBehaviour
         moveV.Normalize();
         transform.position += moveV * speed * Time.deltaTime;
     }
+
+    public void PathToTarget()
+    {
+        if (path.Count == 0)
+        {
+            path = PathFinder.FindPath(gameObject, myTarget, GameObject.Find("AINodes"));
+        }
+        else if(!path[path.Count - 1].AddComponent<Node>().TargetIsVisible(myTarget)) 
+        {
+            path = PathFinder.FindPath(gameObject, myTarget, GameObject.Find("AINodes"));
+        }
+        if (path.Count > 0) 
+        {
+            Vector3 targetNodePos = path[0].transform.position;
+            MoveTo(targetNodePos);
+            if (Vector3.Distance(transform.position, targetNodePos) < nodeOffsetDist) 
+            {
+                path.RemoveAt(0);
+            }
+        }
+
+    }
+
+    public GameObject findNearestNode() 
+    {
+        float dist = float.MaxValue;
+        GameObject nearestNode = null;
+        foreach (GameObject g in nearNodes) 
+        {
+            float testDist = Vector3.Distance(g.transform.position, transform.position);
+            if (testDist < dist) 
+            {
+                nearestNode = g;
+                dist = testDist;
+            }
+        }
+        return nearestNode;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Vector3 curStart = transform.position;
+        for (int i = 0; i < path.Count; i++) 
+        {
+            Vector3 curEnd = path[i].transform.position;
+            Gizmos.DrawLine(curStart, curEnd);
+            curStart = curEnd;
+        }
+        Gizmos.DrawLine(curStart, myTarget.transform.position);
+    }
+
+
 
 
 
