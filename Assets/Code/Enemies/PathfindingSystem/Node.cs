@@ -17,7 +17,7 @@ public class Node : MonoBehaviour
 
     public List<Connection> connections = new List<Connection>();
 
-
+    public List<ZombieController> nearZombies = new List<ZombieController>();
 
 
     void Start()
@@ -63,7 +63,6 @@ public class Node : MonoBehaviour
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = target.transform.position - transform.position;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
-
         return hit.transform.tag == "Player";
     }
 
@@ -77,6 +76,7 @@ public class Node : MonoBehaviour
         if (collision.CompareTag("Enemy"))
         {
             collision.GetComponent<ZombieController>().nearNodes.Add(gameObject);
+            nearZombies.Add(collision.GetComponent<ZombieController>());
         }
     }
 
@@ -89,6 +89,8 @@ public class Node : MonoBehaviour
             {
                 zc.nearNodes.Remove(gameObject);
             }
+            if(nearZombies.Contains(zc))
+            nearZombies.Remove(zc);
         }
     }
 

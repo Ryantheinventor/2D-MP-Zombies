@@ -6,6 +6,9 @@ public class EnemyStateManager : MonoBehaviour
 {
 
     [SerializeField]
+    protected List<PlayerController> players = new List<PlayerController>();
+
+    [SerializeField]
     protected List<ZombieController> zombies = new List<ZombieController>();
 
 
@@ -16,14 +19,7 @@ public class EnemyStateManager : MonoBehaviour
             switch (z.myState) 
             {
                 case ZombieController.State.Waiting:
-                    if (z.TargetIsVisible)
-                    {
-                        z.ChangeState(ZombieController.State.Tracking);
-                    }
-                    else 
-                    {
-                        z.ChangeState(ZombieController.State.Leading);
-                    }
+                    WaitingForTarget(z);
                     break;
                 case ZombieController.State.Following:
                     if (z.TargetIsVisible)
@@ -51,9 +47,48 @@ public class EnemyStateManager : MonoBehaviour
         }
     }
 
+    public void WaitingForTarget(ZombieController zombie) 
+    {
+        if (zombie.myTarget == null)
+        {
+            //currently hardcoded for one person but overall designed to 
+            foreach (PlayerController p in players)
+            {
+                if (p.isFireing) 
+                {
+                    zombie.myTarget = p.gameObject;
+                }
+                if (p.nearZombies.Contains(zombie)) 
+                {
+                    zombie.myTarget = p.gameObject;
+                }
+            }
+        }
+
+        if(zombie.myTarget != null)
+        {
+            ZombieController nl = zombie.FindNearestLeader();
+            if (nl != null)
+            {
+                zombie.ChangeState(ZombieController.State.Following);
+                zombie.myLeader = nl.gameObject;
+            }
+            else
+            {
+                zombie.ChangeState(ZombieController.State.Leading);
+            }
+        }
+    }
+
 
     public void NewZombie(GameObject zom) 
     {
         zombies.Add(zom.GetComponent<ZombieController>());
     }
+
+    public void NewPlayer(GameObject player)
+    {
+        players.Add(player.GetComponent<PlayerController>());
+    }
+
 }

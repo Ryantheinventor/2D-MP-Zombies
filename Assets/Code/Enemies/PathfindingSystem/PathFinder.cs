@@ -16,29 +16,39 @@ public class PathFinder
 
     public static List<GameObject> FindPath(GameObject zombie, GameObject target, GameObject nodeContainer) 
     {
-        ZombieController zc = zombie.GetComponent<ZombieController>();
+        //open/closed list for A*
         List<NodeValues> openList = new List<NodeValues>();
         List<NodeValues> closedList = new List<NodeValues>();
+
+        //create starting node
         NodeValues curNode = new NodeValues();
-        curNode.node = zc.findNearestNode().GetComponent<Node>();
+        ZombieController zc = zombie.GetComponent<ZombieController>();
+        curNode.node = zc.FindNearestNode().GetComponent<Node>();
         curNode.fCost = 0;
         curNode.gCost = 0;
         curNode.parentNode = null;
+        
 
         bool nodesLeft = true;
         while (nodesLeft) 
         {
+            //add current node to closed list
             closedList.Add(curNode);
+            //if the target is visable from the last node then the path is ready to be traced back
             if (curNode.node.TargetIsVisible(target)) 
             {
                 return TraceBack(closedList);
             }
+            //loop through all connected nodes of cur node
             foreach (Node.Connection c in curNode.node.connections) 
             {
+                //if the node has not already been checked yet
                 if (!ListContainsNode(c.connection, closedList)) 
                 {
+                    //if the node has not already been seen yet
                     if (!ListContainsNode(c.connection, openList)) 
                     {
+                        //add the node to open list
                         NodeValues cValues = new NodeValues();
                         cValues.node = c.connection;
                         cValues.gCost = c.distance + curNode.gCost;
@@ -49,17 +59,18 @@ public class PathFinder
                     }
                 }
             }
+            //change cur node to lowest cost node in open list
             if (openList.Count > 0)
             {
                 curNode = openList[0];
                 openList.RemoveAt(0);
             }
-            else 
+            else //no more nodes left to check so give
             {
                 nodesLeft = false;
             }
         }
-        return TraceBack(closedList);
+        return new List<GameObject>();
     }
 
     private static List<GameObject> TraceBack(List<NodeValues> closedList)
