@@ -138,19 +138,6 @@ public class ZombieController : MonoBehaviour
             Debug.LogError("No leading zombie was set");
             return;
         }
-        //attempt to follow leader directly
-        //if (Vector3.Distance(myLeader.transform.position, transform.position) < followSeperation)
-        //{
-        //    MoveTo(myLeader.transform.position + (transform.position - myLeader.transform.position));
-        //}
-        //else 
-        //{
-        //    MoveTo(myLeader.transform.position);
-        //}
-        //if (TargetNotVisible(myLeader)) 
-        //{
-        //    ChangeState(State.Waiting);
-        //}
 
         //use same path data as leader
         ZombieController leaderZC = myLeader.GetComponent<ZombieController>();
@@ -162,25 +149,38 @@ public class ZombieController : MonoBehaviour
             }
             else 
             {
+                //MoveTo(myLeader.transform.position + (transform.position - myLeader.transform.position).normalized * 2);
 
                 if (curFollowNode != null)
                 {
+
                     if (curFollowNode == leaderZC.path[0])
                     {
+                        curFollowNode = null;
+                    }
+                    else if(Vector3.Distance(transform.position, myLeader.transform.position) < 2)
+                    {
+                        //move awway from node if we have arrived before the leader
+                        MoveTo(leaderZC.path[0].transform.position 
+                            - (myLeader.transform.position - leaderZC.path[0].transform.position).normalized * 2 
+                            + (transform.position - leaderZC.path[0].transform.position).normalized * 2);
 
                     }
+
                 }
-                else 
+                else
                 {
+
                     MoveTo(leaderZC.path[0].transform.position);
+
                 }
-                if (Vector3.Distance(transform.position, path[0].transform.position) < nodeOffsetDist) 
+                if (Vector3.Distance(transform.position, leaderZC.path[0].transform.position) < nodeOffsetDist)
                 {
-                    if (leaderZC.path.Count > 1) {
+                    if (leaderZC.path.Count > 1)
+                    {
                         curFollowNode = leaderZC.path[1];
                     }
                 }
-                
             }
         }
     }
@@ -246,11 +246,11 @@ public class ZombieController : MonoBehaviour
                     case State.Following:
                         Gizmos.color = Color.magenta;
                         Gizmos.DrawLine(curStart, myLeader.transform.position);
-                        if (path.Count > 0)
-                        {
-                            Gizmos.color = Color.blue;
-                            Gizmos.DrawLine(curStart, myLeader.GetComponent<ZombieController>().path[0].transform.position);
-                        }
+                        //if (path.Count > 0)
+                        //{
+                        //    Gizmos.color = Color.blue;
+                        //    Gizmos.DrawLine(curStart, myLeader.GetComponent<ZombieController>().path[0].transform.position);
+                        //}
                         break;
                 }
             }
