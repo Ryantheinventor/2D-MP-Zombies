@@ -59,8 +59,14 @@ public class EnemyStateManager : MonoBehaviour
                 if (p.isFireing) 
                 {
                     zombie.myTarget = p.gameObject;
+                    break;
                 }
                 if (p.nearZombies.Contains(zombie)) 
+                {
+                    zombie.myTarget = p.gameObject;
+                    break;
+                }
+                if (zombie.TargetInLOS(p.gameObject)) 
                 {
                     zombie.myTarget = p.gameObject;
                 }

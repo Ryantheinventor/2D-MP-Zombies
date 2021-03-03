@@ -9,6 +9,7 @@ public class ZombieController : MonoBehaviour
 {
     public GameObject myTarget;
     public float speed = 5;
+    public float viewAngle = 10;
     public bool TargetIsVisible = false;
     public float TargetCheckTime = 2f;//seconds between target visibility checks
     private float curCheckTime = 0f;
@@ -27,6 +28,8 @@ public class ZombieController : MonoBehaviour
 
     [HideInInspector]
     public float curWaitTime = 0f;
+
+    private Vector3 facing = new Vector3();
     
     public enum State 
     {
@@ -41,6 +44,7 @@ public class ZombieController : MonoBehaviour
         GameObject.FindObjectOfType<EnemyStateManager>().NewZombie(gameObject);
         nodeContainer = GameObject.Find("AINodes");
         transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 360));
+        facing = new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad));
     }
 
 
@@ -79,6 +83,7 @@ public class ZombieController : MonoBehaviour
         int layerMask = 1 << 7;
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = target.transform.position - transform.position;
+
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
         return hit.transform.gameObject == target;
     }
@@ -104,7 +109,13 @@ public class ZombieController : MonoBehaviour
 
     public bool TargetInLOS(GameObject target)
     {
-        //put math here
+        Vector3 toTarget = (target.transform.position - transform.position).normalized;
+        float dot = Vector3.Dot(toTarget, facing.normalized);
+        float difAngle = Mathf.Acos(dot);
+        if (difAngle < viewAngle * Mathf.Deg2Rad) 
+        {
+            return (TargetVisible(target));
+        }
         return false;
     }
 
@@ -112,6 +123,7 @@ public class ZombieController : MonoBehaviour
     {
         Vector3 moveV = target - transform.position;
         moveV.Normalize();
+        facing = moveV;
         transform.position += moveV * speed * Time.deltaTime;
         transform.eulerAngles = new Vector3(0,0, Mathf.LerpAngle(transform.eulerAngles.z, Mathf.Atan2(moveV.y, moveV.x) * Mathf.Rad2Deg, 5* Time.deltaTime));
         
@@ -272,6 +284,20 @@ public class ZombieController : MonoBehaviour
         {
             //weird exception where nothing can be done
         }
+        
+        
+        
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(transform.position, transform.position + facing.normalized);
+        Gizmos.color = Color.cyan;
+        Vector3 a = new Vector3(Mathf.Cos((transform.eulerAngles.z + viewAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z + viewAngle) * Mathf.Deg2Rad));
+        Vector3 b = new Vector3(Mathf.Cos((transform.eulerAngles.z - viewAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z - viewAngle) * Mathf.Deg2Rad));
+        Gizmos.DrawLine(transform.position, transform.position + a.normalized * 5);
+        Gizmos.DrawLine(transform.position, transform.position + b.normalized * 5);
     }
 
     //clean up on state change
