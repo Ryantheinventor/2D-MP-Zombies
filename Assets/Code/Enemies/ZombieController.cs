@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 //using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ZombieController : MonoBehaviour
 {
@@ -23,7 +24,9 @@ public class ZombieController : MonoBehaviour
     private GameObject nodeContainer;
     //[HideInInspector]
     public List<GameObject> nearNodes = new List<GameObject>();
-    
+
+    [HideInInspector]
+    public float curWaitTime = 0f;
     
     public enum State 
     {
@@ -37,6 +40,7 @@ public class ZombieController : MonoBehaviour
     {
         GameObject.FindObjectOfType<EnemyStateManager>().NewZombie(gameObject);
         nodeContainer = GameObject.Find("AINodes");
+        transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 360));
     }
 
 
@@ -51,6 +55,7 @@ public class ZombieController : MonoBehaviour
         switch (myState) 
         {
             case State.Waiting:
+                curWaitTime += Time.deltaTime;
                 break;
             case State.Following:
                 FollowZombie();
@@ -97,11 +102,19 @@ public class ZombieController : MonoBehaviour
         return TargetIsVisible;
     }
 
+    public bool TargetInLOS(GameObject target)
+    {
+        //put math here
+        return false;
+    }
+
     public void MoveTo(Vector3 target) 
     {
         Vector3 moveV = target - transform.position;
         moveV.Normalize();
         transform.position += moveV * speed * Time.deltaTime;
+        transform.eulerAngles = new Vector3(0,0, Mathf.LerpAngle(transform.eulerAngles.z, Mathf.Atan2(moveV.y, moveV.x) * Mathf.Rad2Deg, 5* Time.deltaTime));
+        
     }
 
     //follow A* path to player
@@ -283,6 +296,7 @@ public class ZombieController : MonoBehaviour
                 path = new List<GameObject>();
                 break;
             case State.Waiting:
+                curWaitTime = 0;
                 break;
             case State.Tracking:
                 break;

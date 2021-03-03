@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyStateManager : MonoBehaviour
 {
 
+    public float maxIdleTime = 10f;
+
     [SerializeField]
     protected List<PlayerController> players = new List<PlayerController>();
 
@@ -63,9 +65,14 @@ public class EnemyStateManager : MonoBehaviour
                     zombie.myTarget = p.gameObject;
                 }
             }
+            //if zombie still has no target check if it has reached it's max idle time
+            if (zombie.curWaitTime >= maxIdleTime && zombie.myTarget == null)
+            {
+                zombie.myTarget = players[Random.Range(0,players.Count)].gameObject;
+            }
         }
 
-        if(zombie.myTarget != null)
+        if (zombie.myTarget != null)
         {
             ZombieController nl = zombie.FindNearestLeader();
             if (nl != null)
@@ -78,6 +85,7 @@ public class EnemyStateManager : MonoBehaviour
                 zombie.ChangeState(ZombieController.State.Leading);
             }
         }
+         
     }
 
 
