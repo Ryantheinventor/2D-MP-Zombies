@@ -9,7 +9,9 @@ public class ZombieController : MonoBehaviour
 {
     public GameObject myTarget;
     public float speed = 5;
-    public float viewAngle = 10;
+    public float losAngle = 10;
+    public float losDist = 4;
+
     public bool TargetIsVisible = false;
     public float TargetCheckTime = 2f;//seconds between target visibility checks
     private float curCheckTime = 0f;
@@ -109,12 +111,15 @@ public class ZombieController : MonoBehaviour
 
     public bool TargetInLOS(GameObject target)
     {
-        Vector3 toTarget = (target.transform.position - transform.position).normalized;
-        float dot = Vector3.Dot(toTarget, facing.normalized);
-        float difAngle = Mathf.Acos(dot);
-        if (difAngle < viewAngle * Mathf.Deg2Rad) 
+        if (Vector3.Distance(target.transform.position, transform.position) < losDist)
         {
-            return (TargetVisible(target));
+            Vector3 toTarget = (target.transform.position - transform.position).normalized;
+            float dot = Vector3.Dot(toTarget, facing.normalized);
+            float difAngle = Mathf.Acos(dot);
+            if (difAngle < losAngle * Mathf.Deg2Rad)
+            {
+                return (TargetVisible(target));
+            }
         }
         return false;
     }
@@ -294,10 +299,10 @@ public class ZombieController : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawLine(transform.position, transform.position + facing.normalized);
         Gizmos.color = Color.cyan;
-        Vector3 a = new Vector3(Mathf.Cos((transform.eulerAngles.z + viewAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z + viewAngle) * Mathf.Deg2Rad));
-        Vector3 b = new Vector3(Mathf.Cos((transform.eulerAngles.z - viewAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z - viewAngle) * Mathf.Deg2Rad));
-        Gizmos.DrawLine(transform.position, transform.position + a.normalized * 5);
-        Gizmos.DrawLine(transform.position, transform.position + b.normalized * 5);
+        Vector3 a = new Vector3(Mathf.Cos((transform.eulerAngles.z + losAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z + losAngle) * Mathf.Deg2Rad));
+        Vector3 b = new Vector3(Mathf.Cos((transform.eulerAngles.z - losAngle) * Mathf.Deg2Rad), Mathf.Sin((transform.eulerAngles.z - losAngle) * Mathf.Deg2Rad));
+        Gizmos.DrawLine(transform.position, transform.position + a.normalized * losDist);
+        Gizmos.DrawLine(transform.position, transform.position + b.normalized * losDist);
     }
 
     //clean up on state change
