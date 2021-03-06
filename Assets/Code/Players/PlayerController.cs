@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
         Vector3 moveV = new Vector3(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"),0);
         moveV.Normalize();
         transform.position += moveV * speed * Time.deltaTime;
+        Vector3 rMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(rMousePos.y, rMousePos.x) * Mathf.Rad2Deg);
     }
 
 

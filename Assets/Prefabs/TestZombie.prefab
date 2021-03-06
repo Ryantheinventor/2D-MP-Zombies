@@ -184,7 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myTarget: {fileID: 0}
   speed: 2
-  viewAngle: 20
+  losAngle: 10
+  losDist: 6
   TargetIsVisible: 0
   TargetCheckTime: 0
   myState: 0

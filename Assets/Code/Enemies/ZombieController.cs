@@ -15,7 +15,6 @@ public class ZombieController : MonoBehaviour
     public bool TargetIsVisible = false;
     public float TargetCheckTime = 2f;//seconds between target visibility checks
     private float curCheckTime = 0f;
-    private float curPathTime = 0f;
     public State myState = State.Waiting;
 
     public GameObject myLeader;
@@ -100,7 +99,7 @@ public class ZombieController : MonoBehaviour
         {
             return false;
         }
-        return hit.transform.tag == "Obstruction";
+        return hit.transform.CompareTag("Obstruction");
     }
 
     public bool ForceTargetVisibleCheck() 
@@ -173,43 +172,36 @@ public class ZombieController : MonoBehaviour
         ZombieController leaderZC = myLeader.GetComponent<ZombieController>();
         if (leaderZC.path.Count > 0) 
         {
-            if (TargetNotVisible(myLeader))
-            { 
-                ChangeState(State.Waiting);
-            }
-            else 
+            //MoveTo(myLeader.transform.position + (transform.position - myLeader.transform.position).normalized * 2);
+
+            if (curFollowNode != null)
             {
-                //MoveTo(myLeader.transform.position + (transform.position - myLeader.transform.position).normalized * 2);
 
-                if (curFollowNode != null)
+                if (curFollowNode == leaderZC.path[0])
                 {
-
-                    if (curFollowNode == leaderZC.path[0])
-                    {
-                        curFollowNode = null;
-                    }
-                    else if(Vector3.Distance(transform.position, myLeader.transform.position) < 2)
-                    {
-                        //move awway from node if we have arrived before the leader
-                        MoveTo(leaderZC.path[0].transform.position 
-                            - (myLeader.transform.position - leaderZC.path[0].transform.position).normalized * 2 
-                            + (transform.position - leaderZC.path[0].transform.position).normalized * 2);
-
-                    }
+                    curFollowNode = null;
+                }
+                else if(Vector3.Distance(transform.position, myLeader.transform.position) < 2)
+                {
+                    //move awway from node if we have arrived before the leader
+                    MoveTo(leaderZC.path[0].transform.position 
+                        - (myLeader.transform.position - leaderZC.path[0].transform.position).normalized * 2 
+                        + (transform.position - leaderZC.path[0].transform.position).normalized * 2);
 
                 }
-                else
-                {
 
-                    MoveTo(leaderZC.path[0].transform.position);
+            }
+            else
+            {
 
-                }
-                if (Vector3.Distance(transform.position, leaderZC.path[0].transform.position) < nodeOffsetDist)
+                MoveTo(leaderZC.path[0].transform.position);
+
+            }
+            if (Vector3.Distance(transform.position, leaderZC.path[0].transform.position) < nodeOffsetDist)
+            {
+                if (leaderZC.path.Count > 1)
                 {
-                    if (leaderZC.path.Count > 1)
-                    {
-                        curFollowNode = leaderZC.path[1];
-                    }
+                    curFollowNode = leaderZC.path[1];
                 }
             }
         }

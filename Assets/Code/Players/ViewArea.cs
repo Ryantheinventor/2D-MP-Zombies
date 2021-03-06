@@ -4,14 +4,26 @@ using UnityEngine;
 
 public class ViewArea : MonoBehaviour
 {
+    public GameObject visionOwner;
+
     public float viewDist = 10f;
     public int rayCount = 4;
+    public int edgeRefinementResolution = 2;
+
 
     Vector3[] newVertices;
     Vector2[] newUV;
     int[] newTriangles;
 
     void Update()
+    {
+        //I plan on making a version that handles corners better
+        ClasicMode();
+
+    }
+
+
+    private void ClasicMode() 
     {
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
@@ -26,18 +38,18 @@ public class ViewArea : MonoBehaviour
         float angleIncrease = 360f / rayCount;
 
         //find verts
-        for (int i = 0; i < rayCount; i++) 
+        for (int i = 0; i < rayCount; i++)
         {
             int layerMask = 1 << 8;
             float curAngle = angleIncrease * i;
             float angleRad = curAngle * Mathf.Deg2Rad;
             Vector3 direction = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad)) * viewDist;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDist, layerMask);
+            RaycastHit2D hit = Physics2D.Raycast(visionOwner.transform.position, direction, viewDist, layerMask);
             if (hit.collider != null)
             {
-                newVertices[i + 1] = new Vector3(hit.point.x,hit.point.y) - transform.position;
+                newVertices[i + 1] = new Vector3(hit.point.x, hit.point.y) - visionOwner.transform.position;
             }
-            else 
+            else
             {
                 newVertices[i + 1] = direction;
             }
@@ -53,11 +65,11 @@ public class ViewArea : MonoBehaviour
             {
                 newTriangles[2 + offset] = 1;
             }
-            else 
+            else
             {
                 newTriangles[2 + offset] = i + 2;
             }
-            
+
         }
 
 
@@ -65,4 +77,7 @@ public class ViewArea : MonoBehaviour
         mesh.uv = newUV;
         mesh.triangles = newTriangles;
     }
+
+
+
 }

@@ -27,6 +27,10 @@ public class EnemyStateManager : MonoBehaviour
                     if (z.TargetIsVisible)
                     {
                         z.ChangeState(ZombieController.State.Tracking);
+                    } 
+                    else if (z.TargetNotVisible(z.myLeader))
+                    {
+                        z.ChangeState(ZombieController.State.Waiting);
                     }
                     break;
                 case ZombieController.State.Leading:
