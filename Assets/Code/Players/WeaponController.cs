@@ -18,9 +18,14 @@ public class WeaponController : MonoBehaviour
             float fireWaitTime = 1 / (weaponStats.fireRPM / 60);
             if (Input.GetMouseButton(0) && fireWaitTime <= curWaitTime) 
             {
-                GameObject newBullet = Instantiate(bulletFab,transform.position,transform.rotation);
-                curWaitTime = 0;
-                newBullet.GetComponent<BulletController>().damage = weaponStats.damagePerBullet;
+                for (int i = 0; i < weaponStats.bulletsPerShot; i++) 
+                {
+                    GameObject newBullet = Instantiate(bulletFab, transform.position, transform.rotation);
+                    newBullet.transform.eulerAngles += new Vector3(0, 0, Random.Range(weaponStats.shotAngle / 2 * -1, weaponStats.shotAngle / 2));
+                    curWaitTime = 0;
+                    newBullet.GetComponent<BulletController>().damage = weaponStats.damagePerBullet;
+                }
+                
 
             }
         }

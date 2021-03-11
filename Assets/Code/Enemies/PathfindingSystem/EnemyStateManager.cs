@@ -8,11 +8,12 @@ public class EnemyStateManager : MonoBehaviour
     public float maxIdleTime = 10f;
 
     [SerializeField]
-    protected List<PlayerController> players = new List<PlayerController>();
+    public readonly List<PlayerController> players = new List<PlayerController>();
 
     [SerializeField]
-    protected List<ZombieController> zombies = new List<ZombieController>();
+    public readonly List<ZombieController> zombies = new List<ZombieController>();
 
+    public bool noZombies { get { return zombies.Count == 0; } }
 
     void Update()
     {

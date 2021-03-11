@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 
 public class ZombieController : MonoBehaviour
 {
+    public int health = 100;
     public GameObject myTarget;
     public float speed = 5;
     public float losAngle = 10;
@@ -74,7 +75,10 @@ public class ZombieController : MonoBehaviour
                 break;
         }
 
-
+        if (health <= 0) 
+        {
+            Kill();
+        }
 
     }
 
@@ -242,6 +246,9 @@ public class ZombieController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+
+        Gizmos.DrawWireCube(transform.position, transform.localScale);
+
         try
         {
             if (myState != State.Waiting)
@@ -335,6 +342,12 @@ public class ZombieController : MonoBehaviour
     {
 
         //TODO replace this with a damge system instead of just destroying the zombie
+        health -= damage;
+        
+    }
+
+    public void Kill() 
+    {
         FindObjectOfType<EnemyStateManager>().ZombieKilled(gameObject);
         Destroy(gameObject);
     }
