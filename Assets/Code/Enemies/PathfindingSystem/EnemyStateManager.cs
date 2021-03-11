@@ -57,7 +57,6 @@ public class EnemyStateManager : MonoBehaviour
     {
         if (zombie.myTarget == null)
         {
-            //currently hardcoded for one person but overall designed to 
             foreach (PlayerController p in players)
             {
                 if (p.isFireing) 
@@ -99,14 +98,34 @@ public class EnemyStateManager : MonoBehaviour
     }
 
 
-    public void NewZombie(GameObject zom) 
+    public void NewZombie(GameObject zom)
     {
         zombies.Add(zom.GetComponent<ZombieController>());
+    }
+
+    public void ZombieKilled(GameObject zom)
+    {
+        ZombieController zomC = zom.GetComponent<ZombieController>();
+        if (zombies.Contains(zomC)) 
+        {
+            zombies.Remove(zomC);
+        }
+        
     }
 
     public void NewPlayer(GameObject player)
     {
         players.Add(player.GetComponent<PlayerController>());
     }
+
+    public void RemovePlayer(GameObject player) 
+    {
+        PlayerController playerC = player.GetComponent<PlayerController>();
+        if (players.Contains(playerC))
+        {
+            players.Remove(playerC);
+        }
+    }
+
 
 }

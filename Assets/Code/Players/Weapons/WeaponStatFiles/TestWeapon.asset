@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc9b2d42c18895844a978e624266fd21, type: 3}
   m_Name: TestWeapon
   m_EditorClassIdentifier: 
+  fireRPM: 300
+  magSize: 20
+  reloadTime: 2

@@ -20,7 +20,7 @@ public class WeaponController : MonoBehaviour
             {
                 GameObject newBullet = Instantiate(bulletFab,transform.position,transform.rotation);
                 curWaitTime = 0;
-
+                newBullet.GetComponent<BulletController>().damage = weaponStats.damagePerBullet;
 
             }
         }

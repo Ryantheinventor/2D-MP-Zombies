@@ -25,6 +25,7 @@ public class ViewArea : MonoBehaviour
 
     private void ClasicMode() 
     {
+        Physics2D.queriesHitTriggers = false;
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
@@ -54,6 +55,7 @@ public class ViewArea : MonoBehaviour
                 newVertices[i + 1] = direction;
             }
         }
+        Physics2D.queriesHitTriggers = true;
 
         //make triangles
         for (int i = 0; i < rayCount; i++)

@@ -48,7 +48,6 @@ public class ZombieController : MonoBehaviour
         facing = new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad));
     }
 
-
     void Update()
     {
         if (curCheckTime >= TargetCheckTime && myTarget != null) 
@@ -164,7 +163,6 @@ public class ZombieController : MonoBehaviour
         if (myLeader == null) 
         {
             ChangeState(State.Waiting);
-            Debug.LogError("No leading zombie was set");
             return;
         }
 
@@ -267,7 +265,11 @@ public class ZombieController : MonoBehaviour
                         break;
                     case State.Following:
                         Gizmos.color = Color.magenta;
-                        Gizmos.DrawLine(curStart, myLeader.transform.position);
+                        if (myLeader != null) 
+                        {
+                            Gizmos.DrawLine(curStart, myLeader.transform.position);
+                        }
+                        
                         //if (path.Count > 0)
                         //{
                         //    Gizmos.color = Color.blue;
@@ -329,6 +331,12 @@ public class ZombieController : MonoBehaviour
 
     }
 
+    public void TakeDamage(int damage)
+    {
 
+        //TODO replace this with a damge system instead of just destroying the zombie
+        FindObjectOfType<EnemyStateManager>().ZombieKilled(gameObject);
+        Destroy(gameObject);
+    }
 
 }
