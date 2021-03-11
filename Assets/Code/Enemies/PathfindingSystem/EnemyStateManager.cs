@@ -28,8 +28,15 @@ public class EnemyStateManager : MonoBehaviour
                     if (z.TargetIsVisible)
                     {
                         z.ChangeState(ZombieController.State.Tracking);
-                    } 
-                    else if (z.TargetNotVisible(z.myLeader))
+                    }
+                    else if (z.myLeader != null)
+                    {
+                        if (z.TargetNotVisible(z.myLeader))
+                        {
+                            z.ChangeState(ZombieController.State.Waiting);
+                        }
+                    }
+                    else 
                     {
                         z.ChangeState(ZombieController.State.Waiting);
                     }
