@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class ZombieHealthBar : MonoBehaviour
 {
-    public ZombieController zombie;
+    public Entity entity;
     private int maxHealth = 0;
     private Transform greenFront;
     private Transform redBack;
     // Start is called before the first frame update
     void Start()
     {
-        maxHealth = zombie.health;
+        maxHealth = entity.health;
         greenFront = transform.Find("GreenFront");
         redBack = transform.Find("RedBack");
         transform.parent = null;
@@ -21,13 +21,13 @@ public class ZombieHealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (zombie == null)
+        if (entity == null)
         {
             Destroy(gameObject);
             return;
         }
-        transform.position = zombie.transform.position;
-        if (zombie.health == maxHealth) 
+        transform.position = entity.transform.position;
+        if (entity.health == maxHealth) 
         {
             redBack.GetComponent<SpriteRenderer>().enabled = false;
             greenFront.GetComponent<SpriteRenderer>().enabled = false;
@@ -38,9 +38,9 @@ public class ZombieHealthBar : MonoBehaviour
             greenFront.GetComponent<SpriteRenderer>().enabled = true;
         }
 
-        if (zombie.health > 0)
+        if (entity.health > 0)
         {
-            float hbSize = (float)zombie.health / (float)maxHealth;
+            float hbSize = (float)entity.health / (float)maxHealth;
             greenFront.localScale = new Vector3(hbSize, greenFront.localScale.y, greenFront.localScale.z);
             float hbPos = -((1f - hbSize) / 2);
             greenFront.localPosition = new Vector3(hbPos, greenFront.localPosition.y, greenFront.localPosition.z);

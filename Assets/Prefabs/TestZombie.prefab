@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243e19aaaf84ccf41bef86121d33ebad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zombie: {fileID: 1139062705131605253}
+  entity: {fileID: 1139062705131605253}
 --- !u!1 &1813569758
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,6 +396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  damage: 20
   myTarget: {fileID: 0}
   speed: 2
   losAngle: 10

@@ -5,9 +5,9 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ZombieController : MonoBehaviour
+public class ZombieController : Entity
 {
-    public int health = 100;
+    public int damage = 20;
     public GameObject myTarget;
     public float speed = 5;
     public float losAngle = 10;

@@ -16,5 +16,5 @@ MonoBehaviour:
   magSize: 20
   reloadTime: 2
   damagePerBullet: 10
-  bulletsPerShot: 60
+  bulletsPerShot: 1
   shotAngle: 1

@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Entity
 {
     public float speed = 10f;
     public List<ZombieController> nearZombies = new List<ZombieController>();
     public bool isFireing = false;
+    public float maxDamageTime = 1;
+    public float curDamageTime = 0;
     private void Start()
     {
         FindObjectOfType<EnemyStateManager>().NewPlayer(gameObject);
@@ -15,7 +17,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         isFireing = Input.GetMouseButton(0);
-        
+        if (curDamageTime > 0) 
+        {
+            curDamageTime -= Time.deltaTime;
+        }
     }
 
     void FixedUpdate()
@@ -46,6 +51,16 @@ public class PlayerController : MonoBehaviour
             {
                 nearZombies.Remove(zc);
             }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        ZombieController zc = collision.gameObject.GetComponent<ZombieController>();
+        if (zc != null && curDamageTime <= 0)
+        {
+            health -= zc.damage;
+            curDamageTime = maxDamageTime;
         }
     }
 
