@@ -31,12 +31,6 @@ public class Node : MonoBehaviour
         }    
     }
 
-    void Update()
-    {
-        
-    }
-
-
     private void OnDrawGizmos()
     {
         Gizmos.DrawIcon(transform.position, gameObject.name);

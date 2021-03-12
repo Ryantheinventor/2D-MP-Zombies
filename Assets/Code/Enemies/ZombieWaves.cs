@@ -40,6 +40,7 @@ public class ZombieWaves : MonoBehaviour
                     GameObject newZombie = Instantiate(zombieFab, transform);
                     newZombie.GetComponent<ZombieController>().health = waveOneHealth + curWave * healthPerWave;
                     int node = 0;
+                    //make sure the node the zombie is spawning at can't be seen by the players
                     bool validSpawnNode = false;
                     while (!validSpawnNode)
                     {

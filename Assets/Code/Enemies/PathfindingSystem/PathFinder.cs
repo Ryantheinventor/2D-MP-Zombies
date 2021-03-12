@@ -73,6 +73,7 @@ public class PathFinder
         return new List<GameObject>();
     }
 
+    //trace back through the nodes
     private static List<GameObject> TraceBack(List<NodeValues> closedList)
     {
         List<GameObject> path = new List<GameObject>();

@@ -25,30 +25,30 @@ public class EnemyStateManager : MonoBehaviour
                     WaitingForTarget(z);
                     break;
                 case ZombieController.State.Following:
-                    if (z.TargetIsVisible)
+                    if (z.TargetIsVisible)//if the target is vissible go after target
                     {
                         z.ChangeState(ZombieController.State.Tracking);
                     }
-                    else if (z.myLeader != null)
+                    else if (z.myLeader != null)//if the leader is still alive
                     {
-                        if (z.TargetNotVisible(z.myLeader))
+                        if (z.TargetNotVisible(z.myLeader))//if the leader leaves the follower behind wait for a new job
                         {
                             z.ChangeState(ZombieController.State.Waiting);
                         }
                     }
-                    else 
+                    else //if the leader died wait for a new job
                     {
                         z.ChangeState(ZombieController.State.Waiting);
                     }
                     break;
                 case ZombieController.State.Leading:
-                    if (z.TargetIsVisible)
+                    if (z.TargetIsVisible)//if the target is vissible go after target
                     {
                         z.ChangeState(ZombieController.State.Tracking);
                     }
                     break;
                 case ZombieController.State.Tracking:
-                    if (!z.TargetIsVisible)
+                    if (!z.TargetIsVisible)//if the target is no longer vissible wait for a new job
                     {
                         z.ChangeState(ZombieController.State.Waiting);
                     }

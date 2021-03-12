@@ -5,16 +5,19 @@ using TMPro;
 using UnityEngine.SceneManagement;
 public class TempGameEnd : MonoBehaviour
 {
+
+    //this code will be replaced as the networking system starts getting implemented
+
     public TextMeshProUGUI text;
     PlayerController playerController;
-    // Start is called before the first frame update
+    
     void Start()
     {
         playerController = GetComponent<PlayerController>();
         text.enabled = false;
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         if(playerController.health <= 0)

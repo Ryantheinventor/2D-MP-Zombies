@@ -43,7 +43,7 @@ public class ZombieController : Entity
 
     private void Start()
     {
-        GameObject.FindObjectOfType<EnemyStateManager>().NewZombie(gameObject);
+        FindObjectOfType<EnemyStateManager>().NewZombie(gameObject);
         nodeContainer = GameObject.Find("AINodes");
         transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 360));
         facing = new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad));
@@ -82,9 +82,10 @@ public class ZombieController : Entity
 
     }
 
+    //checks if the target is directly vissible
     public bool TargetVisible(GameObject target)
     {
-        int layerMask = 1 << 7;
+        int layerMask = 1 << 7;//ignore zombies
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = target.transform.position - transform.position;
 
@@ -92,9 +93,10 @@ public class ZombieController : Entity
         return hit.transform.gameObject == target;
     }
 
+    //checks if a wall is in the way of the target
     public bool TargetNotVisible(GameObject target)
     {
-        int layerMask = 1 << 7;
+        int layerMask = 1 << 7;//ignore zombies
         //Debug.Log($"After:  {Convert.ToString(layerMask, toBase: 2)}");
         Vector3 direction = target.transform.position - transform.position;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, ~layerMask);
@@ -111,6 +113,7 @@ public class ZombieController : Entity
         return TargetIsVisible;
     }
 
+    //check if a target is in the line of sight angle
     public bool TargetInLOS(GameObject target)
     {
         if (Vector3.Distance(target.transform.position, transform.position) < losDist)

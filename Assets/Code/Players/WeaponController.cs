@@ -18,6 +18,7 @@ public class WeaponController : MonoBehaviour
             float fireWaitTime = 1 / (weaponStats.fireRPM / 60);
             if (Input.GetMouseButton(0) && fireWaitTime <= curWaitTime) 
             {
+                //bullet per shot count loop
                 for (int i = 0; i < weaponStats.bulletsPerShot; i++) 
                 {
                     GameObject newBullet = Instantiate(bulletFab, transform.position, transform.rotation);
