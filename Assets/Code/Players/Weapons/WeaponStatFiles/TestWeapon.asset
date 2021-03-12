@@ -15,6 +15,6 @@ MonoBehaviour:
   fireRPM: 1000
   magSize: 20
   reloadTime: 2
-  damagePerBullet: 50
-  bulletsPerShot: 1
-  shotAngle: 20
+  damagePerBullet: 10
+  bulletsPerShot: 60
+  shotAngle: 1
