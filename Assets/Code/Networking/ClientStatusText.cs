@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using static NetSystem.Client;
 public class ClientStatusText : MonoBehaviour
 {
     ClientManager cm;
@@ -16,15 +17,25 @@ public class ClientStatusText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (cm.client.Connected)
+
+        switch (cm.client.Status) 
         {
-            text.text = $"Connected:{cm.client.Ping}";
-            text.color = Color.green;
-        }
-        else 
-        {
-            text.text = "Not connected to server";
-            text.color = Color.red;
+            case ClientStatus.Connecting:
+                text.text = $"Connecting to server...";
+                text.color = Color.white;
+                break;
+            case ClientStatus.Connected:
+                text.text = $"Connected:{cm.client.Ping}";
+                text.color = Color.green;
+                break;
+            case ClientStatus.Failed:
+                text.text = "Could not find server.";
+                text.color = Color.red;
+                break;
+            case ClientStatus.Disconnected:
+                text.text = "Disconnected from server.";
+                text.color = Color.red;
+                break;
         }
     }
 }

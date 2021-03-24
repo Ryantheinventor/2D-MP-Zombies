@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NetSystem;
+using static NetSystem.Client;
 public class ClientManager : MonoBehaviour
 {
     public Client client;
@@ -9,26 +10,25 @@ public class ClientManager : MonoBehaviour
     void Start()
     {
         client = new Client(new List<string> { "10.0.0.4" }, 7777);
-        if (client.Connected)
-        {
-            Debug.Log("Connected to:" + client.client.Client.RemoteEndPoint);
-        }
-        else 
-        {
-            Debug.Log("Faild to connect");
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(client.Status);
         client.CallData();
         client.CallEvents();
     }
 
     void OnApplicationQuit()
     {
-        client.SendPacket(new DataPacket { isEvent = true, varName = "serverDisconnect" });
+        if (client.Status == ClientStatus.Connected) 
+        {
+            client.SendPacket(new DataPacket { isEvent = true, varName = "serverDisconnect" });
+            client.Stop();
+        }
+        
     }
 
 }
