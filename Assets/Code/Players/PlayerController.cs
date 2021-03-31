@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using NetSystem;
 public class PlayerController : Entity
 {
     public float speed = 10f;
@@ -21,6 +21,7 @@ public class PlayerController : Entity
         {
             curDamageTime -= Time.deltaTime;
         }
+        
     }
 
     void FixedUpdate()
@@ -30,6 +31,7 @@ public class PlayerController : Entity
         transform.position += moveV * speed * Time.deltaTime;
         Vector3 rMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(rMousePos.y, rMousePos.x) * Mathf.Rad2Deg);
+        ClientManager.Instance.client.SendPacket(new DataPacket() { varName = "PlayerPos", vectorData = new NetworkingVector3(transform.position.x, transform.position.y, transform.eulerAngles.z) });
     }
 
 
